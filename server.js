@@ -112,7 +112,7 @@ app.post("/api/requests", async (request, response) => {
     const id = rows[0].id;
     response.cookie("customer_request", signRequestAccess(id), { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", maxAge: 86400000, path: "/" });
     response.json({ id });
-  } catch { response.status(503).json({ message: "Unable to start this request right now." }); }
+  } catch (error) { console.error("Customer request creation failed:", error.message); response.status(503).json({ message: "Unable to start this request right now." }); }
 });
 
 app.get("/api/requests/:id", async (request, response) => {
