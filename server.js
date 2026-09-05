@@ -77,6 +77,11 @@ app.post("/api/owner/unlock", (request, response) => {
   response.json({ ownerMode: true, expiresInDays: ownerAccessDays });
 });
 
+app.post("/api/owner/lock", (_request, response) => {
+  response.clearCookie("owner_access", { path: "/" });
+  response.json({ ownerMode: false });
+});
+
 function signRequestAccess(id) {
   const payload = Buffer.from(id).toString("base64url");
   return `${payload}.${crypto.createHmac("sha256", ownerCookieSecret).update(payload).digest("base64url")}`;

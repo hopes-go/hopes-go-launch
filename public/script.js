@@ -387,6 +387,14 @@ brandHome.addEventListener("click", (event) => {
   brandClickTimer = setTimeout(() => { brandClickCount = 0; }, 1800);
   if (brandClickCount === 5) {
     brandClickCount = 0;
+    if (state.ownerMode) {
+      fetch("/api/owner/lock", { method: "POST" }).finally(() => {
+        updateOwnerMode(false);
+        showScreen("home");
+      });
+      closePricingModal();
+      return;
+    }
     ownerError.classList.add("hidden");
     ownerCode.value = "";
     ownerModal.classList.remove("hidden");
