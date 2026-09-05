@@ -9,6 +9,7 @@ const tipInput = document.querySelector("#tipInput");
 const timerDisplay = document.querySelector("#orderTimer");
 const waitingMessage = document.querySelector("#waitingMessage");
 const acceptedMessage = document.querySelector("#acceptedMessage");
+const orderStatusNote = document.querySelector("#orderStatusNote");
 const continueAfterAccepted = document.querySelector("#continueAfterAccepted");
 const driverStatus = document.querySelector("#driverStatus");
 const continueWithTip = document.querySelector("#continueWithTip");
@@ -277,6 +278,7 @@ function startOrderTimer() {
 
 function waitForDriverAcceptance() {
   acceptedMessage.classList.add("hidden");
+  orderStatusNote.classList.remove("hidden");
   continueAfterAccepted.classList.add("hidden");
   waitingMessage.textContent =
     state.requestType === "grocery"
@@ -289,7 +291,8 @@ function waitForDriverAcceptance() {
   clearInterval(window.driverAcceptanceTimer);
   if (state.ownerMode) {
     window.driverAcceptanceTimer = setTimeout(() => {
-      acceptedMessage.classList.remove("hidden");
+    acceptedMessage.classList.remove("hidden");
+    orderStatusNote.classList.add("hidden");
       continueAfterAccepted.classList.remove("hidden");
     }, 900);
     return;
@@ -302,7 +305,8 @@ function waitForDriverAcceptance() {
       const request = await response.json();
       if (request.status === "accepted") {
         clearInterval(window.driverAcceptanceTimer);
-        acceptedMessage.classList.remove("hidden");
+      acceptedMessage.classList.remove("hidden");
+      orderStatusNote.classList.add("hidden");
         continueAfterAccepted.classList.remove("hidden");
       }
     } catch { /* keep waiting */ }

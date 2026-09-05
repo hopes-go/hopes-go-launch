@@ -656,6 +656,22 @@ p {
   font-weight: 800;
 }
 
+.order-status-note,
+.handoff-disclaimer {
+  margin: 20px 0 0;
+  padding: 16px 18px;
+  border: 1px solid rgba(4,149,168,.28);
+  border-radius: 10px;
+  background: rgba(221,243,240,.74);
+  color: #496d73;
+  text-align: left;
+  line-height: 1.55;
+}
+.order-status-note strong,
+.order-status-note span { display: block; }
+.order-status-note strong { margin-bottom: 4px; color: var(--plum); }
+.handoff-disclaimer { border-color: rgba(190,139,67,.32); background: rgba(255,248,232,.8); font-size: .86rem; }
+
 @keyframes loading {
   0% { transform: translateX(-110%); }
   100% { transform: translateX(280%); }
