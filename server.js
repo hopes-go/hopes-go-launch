@@ -44,6 +44,7 @@ async function supabaseRequest(route, options = {}) {
     ...options,
     headers: {
       apikey: supabaseSecretKey,
+      Authorization: `Bearer ${supabaseSecretKey}`,
       "Content-Type": "application/json",
       Prefer: "return=representation",
       ...(options.headers || {}),
