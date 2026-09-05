@@ -44,6 +44,7 @@ const state = {
   currentScreen: "home",
   previousScreen: "home",
   ownerMode: false,
+  requestId: null,
 };
 
 function updateDriverStatus(available) {
@@ -285,12 +286,38 @@ function waitForDriverAcceptance() {
     state.requestType === "grocery"
       ? "Driver accepted. You can continue with your grocery pickup."
       : "Driver accepted. You can continue placing your order.";
-  clearTimeout(window.driverAcceptanceTimer);
+  clearInterval(window.driverAcceptanceTimer);
+  if (state.ownerMode) {
+    window.driverAcceptanceTimer = setTimeout(() => {
+      acceptedMessage.classList.remove("hidden");
+      continueAfterAccepted.classList.remove("hidden");
+    }, 900);
+    return;
+  }
+  window.driverAcceptanceTimer = setInterval(async () => {
+    if (!state.requestId) return;
+    try {
+      const response = await fetch(`/api/requests/${encodeURIComponent(state.requestId)}`);
+      if (!response.ok) return;
+      const request = await response.json();
+      if (request.status === "accepted") {
+        clearInterval(window.driverAcceptanceTimer);
+        acceptedMessage.classList.remove("hidden");
+        continueAfterAccepted.classList.remove("hidden");
+      }
+    } catch { /* keep waiting */ }
+  }, 3000);
+}
 
-  window.driverAcceptanceTimer = setTimeout(() => {
-    acceptedMessage.classList.remove("hidden");
-    continueAfterAccepted.classList.remove("hidden");
-  }, 2200);
+async function createLiveRequest(type) {
+  const response = await fetch("/api/requests", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ type }),
+  });
+  if (!response.ok) throw new Error();
+  state.requestId = (await response.json()).id;
+  waitForDriverAcceptance();
 }
 
 document.querySelectorAll(".request-button").forEach((button) => {
@@ -314,13 +341,13 @@ document.querySelectorAll(".request-button").forEach((button) => {
     if (button.dataset.request === "grocery") {
       state.requestType = "grocery";
       showScreen("waiting");
-      waitForDriverAcceptance();
+      createLiveRequest("grocery").catch(() => alert("We could not start this request right now. Please try again."));
       return;
     }
 
     state.requestType = "delivery";
     showScreen("waiting");
-    waitForDriverAcceptance();
+    createLiveRequest("delivery").catch(() => alert("We could not start this request right now. Please try again."));
   });
 });
 
