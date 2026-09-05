@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#163d36" />
+    <meta
+      name="description"
+      content="Hope's & Go delivery, ride, grocery pickup, and custom request app."
+    />
+    <title>Hope's & Go</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Great+Vibes&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="splash-screen" id="splashScreen" aria-label="Hope's & Go loading screen">
+      <img
+        src="/assets/web-cover.png"
+        alt="Hope's & Go delivery, errands, custom requests, and ride services"
+      />
+      <div class="splash-loader" aria-hidden="true"></div>
+    </div>
+
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="#home" id="brandHome" aria-label="Hope's & Go home">
+          <img class="brand-logo" src="/assets/hopes-go-logo.png" alt="Hope's & Go logo" />
+          <span>
+            <strong>Hope's &amp; Go</strong>
+            <small>When Life Happens, We Go!</small>
+          </span>
+        </a>
+        <div class="header-actions">
+          <span class="owner-mode hidden" id="ownerModeStatus">Owner mode</span>
+          <p class="business-hours">Mon–Sat · 10 AM–11 PM</p>
+          <button class="button soft pricing-open" id="openPricing" type="button">
+            View pricing
+          </button>
+          <div class="driver-pill" id="driverStatus">
+            <span class="status-dot"></span>
+            Driver available
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <div class="screen-controls hidden" id="screenControls">
+          <div class="timer hidden" id="orderTimerBox" aria-live="polite">
+            <span>Order time left</span>
+            <strong id="orderTimer">15:00</strong>
+          </div>
+          <button class="button soft back-button" id="backButton" type="button">Back</button>
+        </div>
+
+        <section class="screen active" id="home">
+          <div class="home-hero">
+            <div class="screen-heading">
+              <h1>What can we help with today?</h1>
+              <p>
+                Create your request, confirm the details, and pay Hope's &amp; Go
+                in one checkout. Your driver pays for the order at pickup.
+              </p>
+            </div>
+
+            <div class="home-action-panel">
+              <p class="eyebrow request-eyebrow">Start a request</p>
+              <div class="request-grid" aria-label="Request choices">
+                <button class="request-button" data-request="delivery">
+                  <span>Delivery Request</span>
+                  <small>Food pickup and drop-off</small>
+                </button>
+                <button class="request-button muted" data-request="ride">
+                  <span>Ride Request</span>
+                  <small>Call to check free ride availability</small>
+                </button>
+                <button class="request-button muted" data-request="grocery">
+                  <span>Grocery Pickup</span>
+                  <small>Online pickup orders</small>
+                </button>
+                <button class="request-button muted" data-request="custom">
+                  <span>Custom Request</span>
+                  <small>For longer trips or special stops</small>
+                </button>
+              </div>
+              <p class="home-helper">
+                New here? Use View pricing in the top corner anytime before you
+                start.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <div class="modal-backdrop hidden" id="pricingModal" role="dialog" aria-modal="true" aria-labelledby="pricingTitle">
+          <section class="pricing-sheet pricing-modal" aria-label="Basic delivery pricing">
+            <button class="modal-close" id="closePricing" type="button" aria-label="Close pricing">x</button>
+            <div class="pricing-intro">
+              <p class="eyebrow">Simple starting prices</p>
+              <h2 id="pricingTitle">Know the total before you check out.</h2>
+              <p>
+                Your delivery price is calculated automatically from the drop-off
+                distance and any quick stops added to the trip.
+              </p>
+            </div>
+            <div class="price-grid">
+              <div><span>Burlington, West Burlington, up to 5 miles out</span><strong>$10</strong></div>
+              <div><span>6-15 miles outside town</span><strong>$20</strong></div>
+              <div><span>16-25 miles outside town</span><strong>$27</strong></div>
+              <div><span>26-35 miles outside town</span><strong>$35</strong></div>
+              <div><span>Extra food pickup location</span><strong>+$7</strong></div>
+              <div><span>Small gas-station stop on route</span><strong>+$3</strong></div>
+              <div><span>Large grocery order or many heavy items</span><strong>+$10</strong></div>
+            </div>
+            <p class="friendly-note">
+              Grocery pickup uses the same distance pricing as delivery. Need a
+              longer trip or more stops? No problem, start a Custom Request and
+              we will help price it separately.
+            </p>
+          </section>
+        </div>
+
+        <section class="screen" id="rideDisclaimer">
+          <div class="center-panel ride-panel">
+            <p class="eyebrow">Ride request</p>
+            <h1>Call us to check ride availability.</h1>
+            <p>
+              Hope's &amp; Go does not have a taxi permit yet, so we cannot
+              charge for rides at this time. Because of that, not every ride
+              request can be accepted.
+            </p>
+            <p>
+              Free-will donations help us accept more rides by supporting gas,
+              vehicle upkeep, and staffing.
+            </p>
+            <p class="call-routing">Call (319) 600-6857 and choose extension 2 for rides.</p>
+            <div class="ride-actions">
+              <a class="button primary ride-button" href="tel:+13196006857">Call for a ride</a>
+              <button class="button soft ride-button" id="backFromRide" type="button">Back to requests</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen" id="afterHours">
+          <div class="center-panel after-hours-panel">
+            <p class="eyebrow">Hope's &amp; Go is currently closed</p>
+            <h1>We will be back soon.</h1>
+            <p>
+              Our regular business hours are Monday through Saturday, 10 AM to
+              11 PM. You can still submit a request for future service below.
+            </p>
+            <form class="form-panel after-hours-form" id="afterHoursForm">
+              <label>Type of request
+                <select name="futureRequestType" required>
+                  <option value="" selected disabled>Select a request type</option>
+                  <option value="delivery">Delivery request</option>
+                  <option value="ride">Ride request</option>
+                  <option value="grocery">Grocery pickup</option>
+                  <option value="custom">Custom request</option>
+                </select>
+              </label>
+              <label>Preferred service date and time
+                <input name="futureRequestTime" required placeholder="Example: Monday at 11:30 AM" />
+              </label>
+              <label>Request details
+                <textarea name="futureRequestDetails" required rows="4" placeholder="Tell us what you need and where"></textarea>
+              </label>
+              <label>Best callback number
+                <input name="futureCallbackNumber" required inputmode="tel" placeholder="(319) 555-0123" />
+              </label>
+              <p class="friendly-note custom-note">
+                Once your request is reviewed, someone from Hope's &amp; Go will
+                call or text you back to confirm the details and availability.
+              </p>
+              <button class="button primary" type="submit">Submit future service request</button>
+            </form>
+          </div>
+        </section>
+
+        <section class="screen" id="waiting">
+          <div class="center-panel">
+            <p class="eyebrow">Checking availability</p>
+            <h1>Please wait while we confirm your driver.</h1>
+            <p id="waitingMessage">
+              A clocked-in driver will accept your request before you continue.
+            </p>
+            <div class="loading-line" aria-hidden="true"></div>
+            <p class="accepted-message hidden" id="acceptedMessage">
+              Driver accepted. You can continue placing your order.
+            </p>
+            <button class="button primary hidden" id="continueAfterAccepted">
+              Continue
+            </button>
+          </div>
+        </section>
+
+        <section class="screen" id="placeOrder">
+          <div class="split">
+            <div>
+              <h1>Call the store and order under Hope's &amp; Go.</h1>
+              <p>
+                Please place the order under the name Hope's &amp; Go. Ask for
+                the total after tax and the pickup time. Hope's &amp; Go will
+                collect the full food total in checkout, then the driver will
+                pay the store at pickup. Delivery pricing is calculated by the
+                system from the drop-off address and added stops.
+              </p>
+            </div>
+
+            <div class="form-stack">
+              <p class="eyebrow form-eyebrow">Place the order</p>
+              <form class="form-panel" id="deliveryForm">
+                <label>
+                  Store or restaurant
+                  <input name="store" required placeholder="Example: Local Diner" />
+                </label>
+                <label>
+                  Order name
+                  <input name="orderName" required placeholder="Hope's & Go / customer name" />
+                </label>
+                <label>
+                  Pickup time
+                  <input name="pickupTime" required placeholder="Example: 6:45 PM" />
+                </label>
+                <label>
+                  Drop-off street address
+                  <input name="dropoffStreet" required placeholder="123 Main St" />
+                </label>
+                <div class="form-row">
+                  <label>
+                    Apt, suite, or unit
+                    <input name="dropoffApt" placeholder="Apt 2B" />
+                  </label>
+                  <label>
+                    Town
+                    <input name="dropoffTown" required placeholder="Burlington" />
+                  </label>
+                </div>
+                <div class="form-row address-row">
+                  <label>
+                    State
+                    <input name="dropoffState" required maxlength="2" value="IA" />
+                  </label>
+                  <label>
+                    ZIP code
+                    <input name="dropoffZip" required inputmode="numeric" placeholder="52601" />
+                  </label>
+                </div>
+                <div class="form-row">
+                  <label>
+                    Food order total
+                    <input name="foodTotal" required type="text" inputmode="decimal" placeholder="$0.00" />
+                  </label>
+                  <div class="system-calc">
+                    <span>Delivery distance</span>
+                    <strong id="distanceStatus">Calculated from address</strong>
+                  </div>
+                </div>
+                <label>
+                  Second food order stop
+                  <input name="secondFoodStop" placeholder="Leave blank if there is not a second food stop" />
+                </label>
+                <label>
+                  Small stop on route
+                  <input name="smallStop" placeholder="Example: gas station drink or chips" />
+                </label>
+                <div class="live-fees" aria-live="polite">
+                  <div><span>Calculated delivery fee</span><strong id="liveDeliveryFee">$10.00</strong></div>
+                  <div><span>Second food stop fee</span><strong id="liveSecondStopFee">$0.00</strong></div>
+                  <div><span>Small stop fee</span><strong id="liveSmallStopFee">$0.00</strong></div>
+                </div>
+                <p class="policy-note">
+                  Please enter the food total as accurately as possible. If the
+                  store total is higher than the amount entered, your card may be
+                  charged the difference plus a $10 inconvenience fee.
+                </p>
+                <button class="button primary" type="submit">Submit order details</button>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen" id="groceryDetails">
+          <div class="split">
+            <div>
+              <h1>Tell us where to pick up your groceries.</h1>
+              <p>
+                For now, all grocery orders must be placed online for pickup
+                before submitting this request. Grocery shopping service will
+                launch soon. Grocery pickup uses the same distance pricing as
+                delivery, with a $10 charge for large orders or orders with many
+                heavy items.
+              </p>
+            </div>
+
+            <div class="form-stack">
+              <p class="eyebrow form-eyebrow">Submit grocery details</p>
+              <form class="form-panel" id="groceryForm">
+                <label>
+                  Order name
+                  <input name="groceryOrderName" required placeholder="Name on the pickup order" />
+                </label>
+                <label>
+                  Store of pickup
+                  <input name="groceryStore" required placeholder="Example: Walmart Pickup" />
+                </label>
+                <label>
+                  Pickup time
+                  <input name="groceryPickupTime" required placeholder="Example: 5:30 PM" />
+                </label>
+                <label>
+                  Drop-off street address
+                  <input name="groceryStreet" required placeholder="123 Main St" />
+                </label>
+                <div class="form-row">
+                  <label>
+                    Apt, suite, or unit
+                    <input name="groceryApt" placeholder="Apt 2B" />
+                  </label>
+                  <label>
+                    Town
+                    <input name="groceryTown" required placeholder="Burlington" />
+                  </label>
+                </div>
+                <div class="form-row address-row">
+                  <label>
+                    State
+                    <input name="groceryState" required maxlength="2" value="IA" />
+                  </label>
+                  <label>
+                    ZIP code
+                    <input name="groceryZip" required inputmode="numeric" placeholder="52601" />
+                  </label>
+                </div>
+                <label class="checkbox-card">
+                  <input type="checkbox" name="largeGrocery" />
+                  Large order or many heavy items (+$10)
+                </label>
+                <p class="policy-note">
+                  Please select the large/heavy order option if it applies. If
+                  it is not selected and the driver arrives to a very large
+                  order or many heavy items, your card may be charged a $20
+                  inconvenience fee.
+                </p>
+                <div class="live-fees" aria-live="polite">
+                  <div><span>Calculated grocery pickup fee</span><strong id="groceryDeliveryFee">$10.00</strong></div>
+                  <div><span>Large/heavy order fee</span><strong id="groceryLargeFee">$0.00</strong></div>
+                </div>
+                <button class="button primary" type="submit">Submit grocery details</button>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen" id="customDetails">
+          <div class="split">
+            <div>
+              <h1>Tell us how we can help.</h1>
+              <p>
+                Custom requests are reviewed individually so we can make sure we
+                understand the trip, timing, and any special needs before giving
+                you a price.
+              </p>
+            </div>
+
+            <div class="form-stack">
+              <p class="eyebrow form-eyebrow">Custom request</p>
+              <form class="form-panel" id="customRequestForm">
+                <label>
+                  Describe your request
+                  <textarea name="requestDescription" required rows="4" placeholder="Tell us what you need help with"></textarea>
+                </label>
+                <div class="location-list" id="customLocations">
+                  <label>
+                    Location #1
+                    <input name="location1" required placeholder="Address, business, or landmark" />
+                  </label>
+                  <label>
+                    Location #2
+                    <input name="location2" required placeholder="Address, business, or landmark" />
+                  </label>
+                </div>
+                <button class="button soft add-location" id="addLocation" type="button">Add location</button>
+                <label>
+                  Is the request already paid for, or does the driver need to pay?
+                  <select name="paymentResponsibility" required>
+                    <option value="" selected disabled>Select one</option>
+                    <option value="already-paid">It is already paid for</option>
+                    <option value="driver-pays">The driver will need to pay</option>
+                    <option value="not-applicable">Not applicable</option>
+                  </select>
+                </label>
+                <label>
+                  Preferred time for the request
+                  <input name="requestTime" required placeholder="Example: Today around 4:00 PM" />
+                </label>
+                <label>
+                  Important details
+                  <textarea name="importantDetails" rows="4" placeholder="Stops, items, accessibility needs, or anything else we should know"></textarea>
+                </label>
+                <label>
+                  Best callback number
+                  <input name="callbackNumber" required inputmode="tel" placeholder="(555) 555-0123" />
+                </label>
+                <p class="friendly-note custom-note">
+                  Someone from Hope's &amp; Go will go over your request details
+                  and give you a call about pricing and any further questions.
+                  Once your request is accepted, you will receive a text
+                  confirming the details with a payment link.
+                </p>
+                <p class="call-routing custom-routing">Need to reach the owner? Call (319) 600-6857 and choose extension 0.</p>
+                <button class="button primary" type="submit">Send request for review</button>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen" id="tipScreen">
+          <div class="center-panel tip-panel">
+            <p class="eyebrow">Add a tip</p>
+            <h1>Tips make a real difference.</h1>
+            <p>
+              Your driver is using their time, vehicle, and care to make the
+              pickup easier for you. Tips help support reliable service,
+              staffing, gas, and vehicle upkeep.
+            </p>
+            <label class="tip-choice">
+              Enter a tip total
+              <input id="tipInput" type="text" inputmode="decimal" value="$5.00" />
+            </label>
+            <div class="tip-actions">
+              <button class="button primary tip-button" id="continueWithTip" type="button">Continue with tip</button>
+              <button class="button soft tip-button" id="continueWithoutTip" type="button">Continue without a tip</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen" id="checkout">
+          <div class="checkout-heading">
+            <p class="eyebrow">Checkout</p>
+            <h1><span>Review and</span><span>pay</span><strong>Hope's &amp; Go</strong></h1>
+          </div>
+          <div class="checkout-layout">
+            <div class="checkout-copy">
+              <p>
+                This checkout includes the food order total, delivery fee, tip,
+                estimated taxes, and the Stripe/card transaction fee. By selecting
+                “Pay with Stripe,” you authorize Hope's &amp; Go to charge the
+                payment method shown for the total displayed at checkout. Final
+                taxes and amounts may vary when required by the store, address, or
+                applicable law.
+              </p>
+            </div>
+            <aside class="summary-panel" aria-label="Checkout summary">
+              <h2>Payment summary</h2>
+              <dl>
+                <div><dt>Food order total</dt><dd id="summaryFood">$0.00</dd></div>
+                <div><dt>Delivery fee</dt><dd id="summaryDelivery">$0.00</dd></div>
+                <div><dt>Second food order stop</dt><dd id="summarySecondStop">$0.00</dd></div>
+                <div><dt>Small stop on route</dt><dd id="summarySmallStop">$0.00</dd></div>
+                <div><dt>Tip</dt><dd id="summaryTip">$0.00</dd></div>
+                <div><dt>Estimated taxes</dt><dd id="summaryTax">$0.00</dd></div>
+                <div><dt>Stripe/card transaction fee</dt><dd id="summaryCardFee">$0.00</dd></div>
+                <div class="total"><dt>Total due today</dt><dd id="summaryTotal">$0.00</dd></div>
+              </dl>
+              <button class="button primary full" id="mockPay">Pay with Stripe</button>
+              <p class="policy-note checkout-policy" id="checkoutFoodPolicy">
+                By continuing, you agree that if the food total at pickup is
+                higher than the amount entered, Hope's &amp; Go may charge your
+                card for the difference plus a $10 inconvenience fee.
+              </p>
+              <p class="fine-print">
+                Stripe checkout will be connected after the payment account is
+                ready. Fees shown here are estimates for planning.
+              </p>
+            </aside>
+          </div>
+        </section>
+      </main>
+      <footer class="site-footer" aria-label="Legal and support information">
+        <p>© 2026 Hope's &amp; Go</p>
+        <nav aria-label="Policies">
+          <button class="footer-link" type="button" data-legal-title="Privacy Policy">Privacy Policy</button>
+          <button class="footer-link" type="button" data-legal-title="Terms of Service">Terms of Service</button>
+          <button class="footer-link" type="button" data-legal-title="SMS/Text Messaging Terms">SMS/Text Terms</button>
+          <button class="footer-link" type="button" data-legal-title="Cancellation &amp; Refund Policy">Cancellations &amp; Refunds</button>
+          <button class="footer-link" type="button" data-legal-title="Accessibility">Accessibility</button>
+        </nav>
+      </footer>
+    </div>
+
+    <div class="modal-backdrop hidden" id="ownerModal" role="dialog" aria-modal="true" aria-labelledby="ownerModalTitle">
+      <section class="pricing-sheet owner-modal">
+        <button class="modal-close" id="closeOwnerModal" type="button" aria-label="Close owner access">×</button>
+        <p class="eyebrow">Owner access</p>
+        <h2 id="ownerModalTitle">Unlock this device</h2>
+        <p>Enter your 6-digit owner code. This device will stay in Owner Mode for 30 days.</p>
+        <form id="ownerUnlockForm">
+          <label>Owner code
+            <input id="ownerCode" required inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="••••••" />
+          </label>
+          <p class="owner-error hidden" id="ownerError" role="alert"></p>
+          <button class="button primary full" type="submit">Unlock Owner Mode</button>
+        </form>
+      </section>
+    </div>
+
+    <div class="modal-backdrop hidden" id="legalModal" role="dialog" aria-modal="true" aria-labelledby="legalModalTitle">
+      <section class="pricing-sheet owner-modal">
+        <button class="modal-close" id="closeLegalModal" type="button" aria-label="Close policy notice">×</button>
+        <p class="eyebrow">Hope's &amp; Go</p>
+        <h2 id="legalModalTitle">Policy</h2>
+        <p id="legalModalMessage">This policy is being finalized before public launch.</p>
+      </section>
+    </div>
+
+    <script src="/script.js"></script>
+  </body>
+</html>
