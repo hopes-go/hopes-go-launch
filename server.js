@@ -77,6 +77,43 @@ app.post("/api/owner/unlock", (request, response) => {
   response.json({ ownerMode: true, expiresInDays: ownerAccessDays });
 });
 
+function signRequestAccess(id) {
+  const payload = Buffer.from(id).toString("base64url");
+  return `${payload}.${crypto.createHmac("sha256", ownerCookieSecret).update(payload).digest("base64url")}`;
+}
+
+function hasRequestAccess(request, id) {
+  const token = parseCookies(request.headers.cookie).customer_request;
+  if (!token || !token.includes(".")) return false;
+  const [payload, signature] = token.split(".");
+  const expected = crypto.createHmac("sha256", ownerCookieSecret).update(payload).digest("base64url");
+  return signature === expected && Buffer.from(payload, "base64url").toString() === id;
+}
+
+app.post("/api/requests", async (request, response) => {
+  if (!supabaseReady()) return response.status(503).json({ message: "Live requests are still being configured." });
+  try {
+    const rows = await supabaseRequest("service_requests", { method: "POST", body: JSON.stringify({ request_type: request.body.type, customer_details: {} }) });
+    const id = rows[0].id;
+    response.cookie("customer_request", signRequestAccess(id), { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", maxAge: 86400000, path: "/" });
+    response.json({ id });
+  } catch { response.status(503).json({ message: "Unable to start this request right now." }); }
+});
+
+app.get("/api/requests/:id", async (request, response) => {
+  if (!hasRequestAccess(request, request.params.id)) return response.status(403).json({ message: "Request access expired." });
+  try {
+    const rows = await supabaseRequest(`service_requests?id=eq.${encodeURIComponent(request.params.id)}&select=id,status,customer_details,pickup_details,dropoff_details`);
+    response.json(rows[0] || {});
+  } catch { response.status(503).json({ message: "Unable to check request status." }); }
+});
+
+app.post("/api/requests/:id/messages", async (request, response) => {
+  if (!hasRequestAccess(request, request.params.id)) return response.status(403).json({ message: "Request access expired." });
+  try { await supabaseRequest("request_messages", { method: "POST", body: JSON.stringify({ request_id: request.params.id, sender_type: "customer", body: String(request.body.body || "").trim() }) }); response.status(201).json({ sent: true }); }
+  catch { response.status(503).json({ message: "Unable to send message." }); }
+});
+
 app.get("/health", (_request, response) => {
   response.json({ ok: true, service: "hopes-go-launch" });
 });
