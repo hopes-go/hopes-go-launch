@@ -71,7 +71,6 @@ async function refreshDriverAvailability() {
 function updateOwnerMode(enabled) {
   state.ownerMode = enabled;
   ownerModeStatus.classList.toggle("hidden", !enabled);
-  ownerModeStatus.textContent = "Owner preview · no live requests";
 }
 
 async function refreshOwnerAccess() {
