@@ -429,7 +429,7 @@ ownerUnlockForm.addEventListener("submit", async (event) => {
   showScreen("home");
 });
 
-document.querySelectorAll(".footer-link").forEach((link) => {
+document.querySelectorAll(".footer-link[data-legal-title]").forEach((link) => {
   link.addEventListener("click", () => {
     legalModalTitle.textContent = link.dataset.legalTitle;
     legalModal.classList.remove("hidden");
