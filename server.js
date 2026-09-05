@@ -83,6 +83,15 @@ app.post("/api/owner/lock", (_request, response) => {
   response.json({ ownerMode: false });
 });
 
+app.post("/api/owner/test-order", async (request, response) => {
+  if (!hasOwnerAccess(request)) return response.status(401).json({ message: "Owner Mode is required." });
+  if (!supabaseReady()) return response.status(503).json({ message: "Supabase is not configured." });
+  try {
+    const rows = await supabaseRequest("service_requests", { method: "POST", body: JSON.stringify({ request_type: "delivery", customer_details: { test: true, note: "Owner test only. No charge or travel." } }) });
+    response.json({ id: rows[0].id, test: true });
+  } catch { response.status(503).json({ message: "Unable to send the test order." }); }
+});
+
 function signRequestAccess(id) {
   const payload = Buffer.from(id).toString("base64url");
   return `${payload}.${crypto.createHmac("sha256", ownerCookieSecret).update(payload).digest("base64url")}`;

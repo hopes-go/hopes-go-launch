@@ -29,6 +29,7 @@ const ownerCode = document.querySelector("#ownerCode");
 const ownerError = document.querySelector("#ownerError");
 const closeOwnerModal = document.querySelector("#closeOwnerModal");
 const ownerModeStatus = document.querySelector("#ownerModeStatus");
+const sendTestOrder = document.querySelector("#sendTestOrder");
 const legalModal = document.querySelector("#legalModal");
 const legalModalTitle = document.querySelector("#legalModalTitle");
 const closeLegalModal = document.querySelector("#closeLegalModal");
@@ -531,6 +532,14 @@ continueWithoutTip.addEventListener("click", () => {
 
 document.querySelector("#mockPay").addEventListener("click", () => {
   alert(state.ownerMode ? "Owner preview only: no payment was started." : "Stripe checkout will open here once the account is connected.");
+});
+
+sendTestOrder.addEventListener("click", async () => {
+  sendTestOrder.disabled = true;
+  const response = await fetch("/api/owner/test-order", { method: "POST" });
+  const data = await response.json();
+  sendTestOrder.disabled = false;
+  alert(response.ok ? "Test order sent to the driver queue." : (data.message || "Unable to send test order."));
 });
 
 updateSummary();
