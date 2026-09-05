@@ -6,7 +6,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 const ownerPin = process.env.OWNER_PIN;
 const ownerCookieSecret = process.env.OWNER_COOKIE_SECRET;
-const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseUrl = String(process.env.SUPABASE_URL || "").trim().replace(/\s+/g, "").replace(/\/+$/, "");
 const supabaseSecretKey = process.env.SUPABASE_SECRET_KEY;
 const ownerAccessDays = 30;
 
