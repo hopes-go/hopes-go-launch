@@ -89,7 +89,7 @@ app.post("/api/owner/test-order", async (request, response) => {
   try {
     const rows = await supabaseRequest("service_requests", { method: "POST", body: JSON.stringify({ request_type: "delivery", customer_details: { test: true, note: "Owner test only. No charge or travel." } }) });
     response.json({ id: rows[0].id, test: true });
-  } catch { response.status(503).json({ message: "Unable to send the test order." }); }
+  } catch (error) { console.error("Owner test order failed:", error.message); response.status(503).json({ message: `Unable to send the test order: ${error.message.slice(0, 180)}` }); }
 });
 
 function signRequestAccess(id) {
